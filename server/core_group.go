@@ -517,7 +517,7 @@ func LeaveGroup(ctx context.Context, logger *zap.Logger, db *sql.DB, tracker Tra
 		Code:       &wrapperspb.Int32Value{Value: ChannelMessageTypeGroupLeave},
 		SenderId:   userID.String(),
 		Username:   username,
-		Content:    "{}",
+		Content:    fmt.Sprintf(`{"lastState": %v}`, myState.Int64),
 		CreateTime: &timestamppb.Timestamp{Seconds: ts},
 		UpdateTime: &timestamppb.Timestamp{Seconds: ts},
 		Persistent: &wrapperspb.BoolValue{Value: true},
