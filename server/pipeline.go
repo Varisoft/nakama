@@ -62,7 +62,7 @@ func NewPipeline(logger *zap.Logger, config Config, db *sql.DB, protojsonMarshal
 
 func (p *Pipeline) ProcessRequest(logger *zap.Logger, session Session, in *rtapi.Envelope) bool {
 	if logger.Core().Enabled(zap.DebugLevel) { // remove extra heavy reflection processing
-		logger.Debug(fmt.Sprintf("Received %T message", in.Message), zap.Any("message", in.Message))
+		// logger.Debug(fmt.Sprintf("Received %T message", in.Message), zap.Any("message", in.Message))
 	}
 
 	if in.Message == nil {
