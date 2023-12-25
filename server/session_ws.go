@@ -392,7 +392,7 @@ func (s *sessionWS) Send(envelope *rtapi.Envelope, reliable bool) error {
 		case *rtapi.Envelope_Error:
 			s.logger.Debug("Sending error message", zap.Binary("payload", payload))
 		default:
-			s.logger.Debug(fmt.Sprintf("Sending %T message", envelope.Message), zap.Any("envelope", envelope))
+			//s.logger.Debug(fmt.Sprintf("Sending %T message", envelope.Message), zap.Any("envelope", envelope))
 		}
 	}
 
