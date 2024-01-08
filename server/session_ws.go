@@ -75,7 +75,7 @@ type sessionWS struct {
 }
 
 func NewSessionWS(logger *zap.Logger, config Config, format SessionFormat, sessionID, userID uuid.UUID, username string, vars map[string]string, expiry int64, clientIP, clientPort, lang string, protojsonMarshaler *protojson.MarshalOptions, protojsonUnmarshaler *protojson.UnmarshalOptions, conn *websocket.Conn, sessionRegistry SessionRegistry, statusRegistry *StatusRegistry, matchmaker Matchmaker, tracker Tracker, metrics Metrics, pipeline *Pipeline, runtime *Runtime) Session {
-	sessionLogger := logger.With(zap.String("uid", userID.String()), zap.String("sid", sessionID.String()))
+	sessionLogger := logger.With(zap.String("uid", userID.String()), zap.String("sid", sessionID.String()), zap.String("clientIP", clientIP), zap.String("clientPort", clientPort))
 
 	sessionLogger.Info("New WebSocket session connected", zap.Uint8("format", uint8(format)))
 
