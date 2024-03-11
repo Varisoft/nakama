@@ -1686,6 +1686,7 @@ WHERE name ILIKE $2`
 			params = append(params, cursor.Name)
 			query += " AND name > $3"
 		}
+		query += " ORDER BY name ASC"
 	case open != nil && langTag != "" && edgeCount > -1:
 		// Filtering by open/closed, lang tag, and edge count
 		state := 0
