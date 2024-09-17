@@ -191,6 +191,33 @@ func (p *GooglePlayServiceProfile) GetOriginalGoogleId() string {
 	return p.OriginalPlayerId
 }
 
+type GoogleOAuthProfile struct {
+	Subject       string `json:"sub"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Picture       string `json:"picture"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+}
+
+func (p *GoogleOAuthProfile) GetDisplayName() string {
+	return p.Name
+}
+
+func (p *GoogleOAuthProfile) GetEmail() string {
+	return p.Email
+}
+func (p *GoogleOAuthProfile) GetAvatarImageUrl() string {
+	return p.Picture
+}
+func (p *GoogleOAuthProfile) GetGoogleId() string {
+	return p.Subject
+}
+func (p *GoogleOAuthProfile) GetOriginalGoogleId() string {
+	return p.Subject
+}
+
 // SteamProfile is an abbreviated version of a Steam profile.
 type SteamProfile struct {
 	SteamID uint64 `json:"steamid,string"`
@@ -421,6 +448,20 @@ func (c *Client) CheckGoogleToken(ctx context.Context, idToken string) (GooglePr
 		if err == nil {
 			// If any certificate worked, the token is valid.
 			break
+		}
+	}
+
+	// ADDED: support google open id connect
+	if token == nil {
+		profile := GoogleOAuthProfile{}
+		if err := c.request(ctx, "google play services", "https://openidconnect.googleapis.com/v1/userinfo?access_token="+url.QueryEscape(idToken), nil, &profile); err != nil {
+			c.logger.Debug("Failed to request google oauth info.", zap.Any("token", idToken), zap.Error(err))
+		}
+		if profile.Subject == "" {
+			c.logger.Debug("Failed to parse playerId.", zap.Any("token", idToken), zap.Error(err))
+		} else {
+			c.logger.Debug("Obtained the google profile using an access token.", zap.Any("token", idToken), zap.Error(err), zap.Any("player", profile))
+			return &profile, nil
 		}
 	}
 
